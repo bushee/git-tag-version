@@ -1,6 +1,6 @@
 /*
- * git-version
- * https://github.com/bushee/git-version
+ * git-tag-version
+ * https://github.com/bushee/git-tag-version
  *
  * Copyright (c) 2015 Jerzy Jelinek, 2016 Krzysztof "Bushee" Nowaczyk
  * Licensed under the MIT license.
@@ -8,7 +8,7 @@
 
 'use strict';
 
-var gitVersion = require('./src/git-version');
+var gitVersion = require('./src/git-tag-version');
 
 module.exports = function (grunt) {
 

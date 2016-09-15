@@ -1,4 +1,4 @@
-# git-version
+# git-tag-version
 
 > Calculate project version from git tags.
 
@@ -10,13 +10,13 @@ It is very useful when you need to calculate your project version in CI or deplo
 ## Getting Started
 
 ```shell
-npm install git-version --save-dev
+npm install git-tag-version --save-dev
 ```
 
 Once the module has been installed, just load it in your node project:
 
 ```js
-var gitVersion = require('git-version');
+var gitVersion = require('git-tag-version');
 ```
 
 ### Usage Examples

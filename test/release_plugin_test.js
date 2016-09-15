@@ -2,7 +2,7 @@
 
 var shell = require('shelljs');
 
-var gitVersion = require('../src/git-version');
+var gitVersion = require('../src/git-tag-version');
 
 function createCommit() {
     shell.cd(__dirname + '/test-repo');
