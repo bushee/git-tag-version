@@ -1,45 +1,40 @@
 {
-  "name": "grunt-release-plugin",
-  "description": "Calculate project version from git tags and mark SNAPSHOT versions.",
-  "version": "1.1.4",
-  "homepage": "https://github.com/jln-pl/grunt-release-plugin",
+  "name": "git-version",
+  "description": "Calculate project version from git tags.",
+  "version": "1.0.0",
+  "homepage": "https://github.com/bushee/git-version",
   "author": {
     "name": "Jerzy Jelinek",
     "email": "jerzy.jelinek@gmail.com"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/jln-pl/grunt-release-plugin.git"
-  },
-  "bugs": {
-    "url": "https://github.com/jln-pl/grunt-release-plugin/issues"
-  },
-  "licenses": [
+  "contributors": [
     {
-      "type": "MIT",
-      "url": "https://github.com/jln-pl/grunt-release-plugin/blob/master/LICENSE-MIT"
+      "name": "Krzysztof \"Bushee\" Nowaczyk",
+      "email": "bushee01@gmail.com"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bushee/git-version.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bushee/git-version/issues"
+  },
+  "license": "MIT",
   "engines": {
     "node": ">= 0.8.0"
   },
   "scripts": {
     "test": "grunt test"
   },
-  "dependencies": {
-    "grunt-contrib-compress": "^0.13.0"
-  },
   "devDependencies": {
-    "grunt": "~0.4.5",
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-clean": "^0.5.0",
-    "grunt-contrib-jshint": "^0.9.2",
-    "grunt-contrib-nodeunit": "^0.3.3"
-  },
-  "peerDependencies": {
-    "grunt": "~0.4.5"
+    "grunt": "0.4.5",
+    "grunt-cli": "0.1.13",
+    "grunt-contrib-jshint": "0.9.2",
+    "grunt-contrib-nodeunit": "0.3.3",
+    "shelljs": "0.7.4"
   },
   "keywords": [
-    "gruntplugin"
+    "gitversion"
   ]
 }

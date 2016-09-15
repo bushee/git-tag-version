@@ -1,8 +1,8 @@
 /*
- * grunt-release-plugin
- * https://github.com/jln-pl/grunt-release-plugin
+ * git-version
+ * https://github.com/bushee/git-version
  *
- * Copyright (c) 2015 Jerzy Jelinek
+ * Copyright (c) 2015 Jerzy Jelinek, 2016 Krzysztof "Bushee" Nowaczyk
  * Licensed under the MIT license.
  */
 
@@ -11,7 +11,6 @@
 module.exports = function (grunt) {
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
         jshint: {
             all: [
                 'Gruntfile.js',
@@ -23,32 +22,10 @@ module.exports = function (grunt) {
             }
         },
 
-        release_plugin: {
-            options: {
-                repo: '.',
-                pkg: '<%= pkg %>'
-            },
-            currentVersion: {},
-            metadata: {},
-            compress: {
-                main: {
-                    files: [
-                        {
-                            src: ['./dist/*'],
-                            dest: '<%= pkg.name %>/',
-                            filter: 'isFile'
-                        }
-                    ]
-                }
-            }
-        },
-
         nodeunit: {
             tests: ['test/*_test.js']
         }
     });
-
-    grunt.loadTasks('tasks');
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');

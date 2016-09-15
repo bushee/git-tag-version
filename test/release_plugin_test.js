@@ -1,158 +1,91 @@
 'use strict';
 
-var grunt = require('grunt'),
-cp = require('child_process');
+var shell = require('shelljs');
 
-function callGrunt(filename, command, callback) {
-    var gruntCommand = '../node_modules/.bin/grunt --gruntfile ' + filename + ' release_plugin:' + command,
-    options = {cwd: 'test/'};
+var gitVersion = require('../tasks/git-version');
 
-    cp.exec(gruntCommand, options, callback);
+function createCommit() {
+    shell.cd(__dirname + '/test-repo');
+    shell.touch('test-file.js');
+    shell.echo('x').toEnd('test-file.js');
+    shell.exec('git add test-file.js');
+    shell.exec('git commit -m "another commit"');
 }
 
-function getJsonFromOutput(output) {
-    var start = output.indexOf('{'),
-    end = output.indexOf('}') - start + 1;
-
-    return output.substr(start, end);
+function createTag(version) {
+    shell.cd(__dirname + '/test-repo');
+    shell.exec('git tag -a test-' + version + ' -m "test-' + version + '1"');
 }
 
-function setUpTests(additionalCommand, done) {
-    var createRepoWithOneTagCommand = 'cd test; npm install; mkdir test-repo; cd test-repo; git init; ' +
-        'touch initial-file.js; git add initial-file.js; git commit -m "test"; ' + additionalCommand;
+function switchBranch(branchName) {
+    shell.exec('git checkout -b ' + branchName);
+}
 
-    cp.exec(createRepoWithOneTagCommand, function () {
+function wrapTest(testFunc, assertionsCount) {
+    return function (test) {
+        test.expect(assertionsCount || 1);
+        testFunc(test);
+        test.done();
+    };
+}
+
+module.exports = {
+    setUp: function (done) {
+        shell.cd(__dirname);
+        shell.mkdir('test-repo');
+        shell.cd('test-repo');
+        shell.exec('git init');
+        createCommit();
         done();
-    });
-}
-
-function tearDownTests(callback) {
-    var removeCreatedRepoCommand = 'cd test; rm -rf test-repo target node_modules;';
-
-    cp.exec(removeCreatedRepoCommand, function () {
-        callback();
-    });
-}
-
-exports.release_plugin_release = {
-    setUp: function (done) {
-        setUpTests('git tag -a test-1.1.1 -m "test-1.1.1"; ', done);
     },
 
-    tearDown: tearDownTests,
-
-    currentVersion: function (test) {
-        test.expect(1);
-
-        callGrunt('gruntfile.js', 'currentVersion', function (error, stdout) {
-            var expected = '{"currentVersion":"1.1.1"}',
-            actual = getJsonFromOutput(stdout);
-
-            test.equal(actual, expected, 'should return current release project version');
-            test.done();
-        });
+    tearDown: function (done) {
+        shell.cd(__dirname);
+        shell.rm('-rf', 'test-repo');
+        done();
     },
 
-    metadata: function (test) {
-        test.expect(1);
+    "no tag should result in 0.1.0-SNAPSHOT": wrapTest(function (test) {
+        // when
+        var version = gitVersion();
 
-        callGrunt('gruntfile.js', 'metadata', function (error, stdout) {
-            var expected = '{"version":"1.1.1","name":"some-name","domain":"some-domain"}',
-            actual = getJsonFromOutput(stdout);
+        // expect
+        test.equal(version, '0.1.0-SNAPSHOT');
+    }),
 
-            test.equal(actual, expected, 'should return project metadata with release version');
-            test.done();
-        });
-    },
+    "being on some tag should result in proper version": wrapTest(function (test) {
+        // given
+        createTag('myproject-1.0.0');
 
-    compress: function (test) {
-        test.expect(1);
+        // when
+        var version = gitVersion();
 
-        callGrunt('gruntfile.js', 'compress', function () {
-            test.ok(grunt.file.exists('test/target/universal/some-name-1.1.1.zip'), 'should make zip file with release version');
-            test.done();
-        });
-    }
-};
+        // then
+        test.equal(version, '1.0.0');
+    }),
 
-exports.release_plugin_snapshot = {
-    setUp: function (done) {
-        setUpTests('git tag -a test-1.1.1 -m "test-1.1.1"; git checkout -b feature/newBranch; touch file.js; git add file.js; git commit -m "test"', done);
-    },
+    "being on untagged commit should result in next version's snapshot": wrapTest(function (test) {
+        // given
+        createTag('myproject-2.3.4');
+        createCommit();
 
-    tearDown: tearDownTests,
+        // when
+        var version = gitVersion();
 
-    currentVersion: function (test) {
-        test.expect(1);
+        // then
+        test.equal(version, '2.3.5-SNAPSHOT');
+    }),
 
-        callGrunt('gruntfile.js', 'currentVersion', function (error, stdout) {
-            var expected = '{"currentVersion":"1.1.2-feature-newBranch-SNAPSHOT"}',
-            actual = getJsonFromOutput(stdout);
+    "being on untagged commit on branch should result in next version's branch snapshot": wrapTest(function (test) {
+        // given
+        createTag('myproject-1.0.0');
+        switchBranch('feature/newBranch');
+        createCommit();
 
-            test.equal(actual, expected, 'should return current snapshot project version');
-            test.done();
-        });
-    },
+        // when
+        var version = gitVersion();
 
-    metadata: function (test) {
-        test.expect(1);
-
-        callGrunt('gruntfile.js', 'metadata', function (error, stdout) {
-            var expected = '{"version":"1.1.2-feature-newBranch-SNAPSHOT","name":"some-name","domain":"some-domain"}',
-            actual = getJsonFromOutput(stdout);
-
-            test.equal(actual, expected, 'should return project metadata with snapshot version');
-            test.done();
-        });
-    },
-
-    compress: function (test) {
-        test.expect(1);
-
-        callGrunt('gruntfile.js', 'compress', function () {
-            test.ok(grunt.file.exists('test/target/universal/some-name-1.1.2-feature-newBranch-SNAPSHOT.zip'), 'should make zip file with snapshot version');
-            test.done();
-        });
-    }
-};
-
-exports.release_plugin_snapshot_no_tag = {
-    setUp: function (done) {
-        setUpTests('', done);
-    },
-
-    tearDown: tearDownTests,
-
-    currentVersion: function (test) {
-        test.expect(1);
-
-        callGrunt('gruntfile.js', 'currentVersion', function (error, stdout) {
-            var expected = '{"currentVersion":"0.0.1-SNAPSHOT"}',
-            actual = getJsonFromOutput(stdout);
-
-            test.equal(actual, expected, 'should return "0.0.1-SNAPSHOT" project version');
-            test.done();
-        });
-    },
-
-    metadata: function (test) {
-        test.expect(1);
-
-        callGrunt('gruntfile.js', 'metadata', function (error, stdout) {
-            var expected = '{"version":"0.0.1-SNAPSHOT","name":"some-name","domain":"some-domain"}',
-            actual = getJsonFromOutput(stdout);
-
-            test.equal(actual, expected, 'should return project metadata with "0.0.1-SNAPSHOT" version');
-            test.done();
-        });
-    },
-
-    compress: function (test) {
-        test.expect(1);
-
-        callGrunt('gruntfile.js', 'compress', function () {
-            test.ok(grunt.file.exists('test/target/universal/some-name-0.0.1-SNAPSHOT.zip'), 'should make zip file with "0.0.1-SNAPSHOT" version');
-            test.done();
-        });
-    }
+        // then
+        test.equal(version, '1.0.1-feature-newBranch-SNAPSHOT');
+    })
 };
