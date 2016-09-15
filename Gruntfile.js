@@ -8,6 +8,8 @@
 
 'use strict';
 
+var gitVersion = require('./src/git-version');
+
 module.exports = function (grunt) {
 
     grunt.initConfig({
@@ -30,7 +32,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
+    grunt.registerTask('current-version', function () {
+        console.log('Current project version is ' + gitVersion());
+    });
+
     grunt.registerTask('test', ['nodeunit']);
     grunt.registerTask('default', ['jshint', 'test']);
-
 };
