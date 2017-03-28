@@ -2,7 +2,7 @@
  * git-tag-version
  * https://github.com/bushee/git-tag-version
  *
- * Copyright (c) 2015 Jerzy Jelinek, 2016 Krzysztof "Bushee" Nowaczyk
+ * Copyright (c) 2015 Jerzy Jelinek, 2016-2017 Krzysztof "Bushee" Nowaczyk
  * Licensed under the MIT license.
  */
 
@@ -16,16 +16,17 @@ module.exports = function (grunt) {
         jshint: {
             all: [
                 'Gruntfile.js',
-                'tasks/*.js',
-                '<%= nodeunit.tests %>'
+                'src/*.js',
+                'test/*.js'
             ],
             options: {
-                jshintrc: '.jshintrc'
+                jshintrc: '.jshintrc',
+                reporterOutput: ''
             }
         },
 
         nodeunit: {
-            tests: ['test/*_test.js']
+            tests: ['test/*.spec.js']
         }
     });
 

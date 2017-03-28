@@ -10,7 +10,10 @@
 
 var cp = require('child_process');
 
-module.exports = function () {
+module.exports = function (options) {
+    options = options || {};
+    var uniqueSnapshot = options.uniqueSnapshot || false;
+
     function getVersion() {
         var lastTag,
             lastCommit,
@@ -73,12 +76,12 @@ module.exports = function () {
                 branchNameTrimmed;
             branchNameTrimmed = cp.execSync(getBranchName, {cwd: '.'}).toString().trim().replace('/', '-');
             if (branchNameTrimmed === 'master') {
-                return versionPrefix + '-SNAPSHOT';
+                return versionPrefix + getSnapshotSuffix();
             }
-            return versionPrefix + '-' + branchNameTrimmed + '-SNAPSHOT';
+            return versionPrefix + '-' + branchNameTrimmed + getSnapshotSuffix();
         } catch (e) {
             console.error('Checking branch name failed');
-            return versionPrefix + '-SNAPSHOT';
+            return versionPrefix + getSnapshotSuffix();
         }
     }
 
@@ -89,6 +92,10 @@ module.exports = function () {
             index: patchIndex,
             value: parseInt(version.substr(patchIndex, version.length), 10) + 1
         };
+    }
+
+    function getSnapshotSuffix() {
+        return uniqueSnapshot ? '-SNAPSHOT.' + getLastCommit() : '-SNAPSHOT';
     }
 
     return getVersion();

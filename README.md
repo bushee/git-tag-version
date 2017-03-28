@@ -19,7 +19,18 @@ Once the module has been installed, just load it in your node project:
 var gitVersion = require('git-tag-version');
 ```
 
-### Usage Examples
+## Usage
+
+```js
+gitVersion(options);
+```
+
+Parameter `options` is optional. It may contain these options:
+- `uniqueSnapshot` (default = `false`)\
+    if false, snapshot versions will be suffixed with just `-SNAPSHOT`, e.g. `1.0.0-SNAPSHOT`;
+    otherwise, current abbreviated git commit's hash will be appended as well, e.g. `1.0.0-SNAPSHOT.c1b653ff` 
+
+## Usage Examples
 
 ```shell
 git init

@@ -10,6 +10,7 @@ function createCommit() {
     shell.echo('x').toEnd('test-file.js');
     shell.exec('git add test-file.js');
     shell.exec('git commit -m "another commit"');
+    return shell.exec('git rev-parse --short HEAD').trim();
 }
 
 function createTag(version) {
@@ -87,5 +88,18 @@ module.exports = {
 
         // then
         test.equal(version, '1.0.1-feature-newBranch-SNAPSHOT');
+    }),
+
+    "snapshot version generated with uniqueSnapshot option should contain commit hash": wrapTest(function (test) {
+        // given
+        createTag('myproject-1.0.0');
+        switchBranch('feature/newBranch');
+        var lastCommit = createCommit();
+
+        // when
+        var version = gitVersion({uniqueSnapshot: true});
+
+        // then
+        test.equal(version, '1.0.1-feature-newBranch-SNAPSHOT.' + lastCommit);
     })
 };
