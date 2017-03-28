@@ -30,7 +30,7 @@ Parameter `options` is optional. It may contain these options:
     if false, snapshot versions will be suffixed with just `-SNAPSHOT`, e.g. `1.0.0-SNAPSHOT`;
     otherwise, current abbreviated git commit's hash will be appended as well, e.g. `1.0.0-SNAPSHOT.c1b653ff` 
 
-## Usage Examples
+### Examples
 
 ```shell
 git init
@@ -52,6 +52,7 @@ git commit -m "add file2.js"
 
 ```js
 console.log(gitVersion()); // will print "0.1.1-SNAPSHOT"
+console.log(gitVersion({uniqueSnapshot: true})); // will print something like "0.1.1-SNAPSHOT.c1b653ff"
 ```
 
 ```shell
