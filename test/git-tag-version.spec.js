@@ -80,26 +80,39 @@ module.exports = {
     "being on untagged commit on branch should result in next version's branch snapshot": wrapTest(function (test) {
         // given
         createTag('myproject-1.0.0');
-        switchBranch('feature/newBranch');
+        switchBranch('newBranch');
         createCommit();
 
         // when
         var version = gitVersion();
 
         // then
-        test.equal(version, '1.0.1-feature-newBranch-SNAPSHOT');
+        test.equal(version, '1.0.1-newBranch-SNAPSHOT');
     }),
 
     "snapshot version generated with uniqueSnapshot option should contain commit hash": wrapTest(function (test) {
         // given
         createTag('myproject-1.0.0');
-        switchBranch('feature/newBranch');
+        switchBranch('newBranch');
         var lastCommit = createCommit();
 
         // when
         var version = gitVersion({uniqueSnapshot: true});
 
         // then
-        test.equal(version, '1.0.1-feature-newBranch-SNAPSHOT.' + lastCommit);
+        test.equal(version, '1.0.1-newBranch-SNAPSHOT.' + lastCommit);
+    }),
+
+    "any semver-incompatible characters in branch name should be replaced with dash": wrapTest(function (test) {
+        // given
+        createTag('myproject-1.0.0');
+        switchBranch('a/b/c_d_e@#{}f');
+        createCommit();
+
+        // when
+        var version = gitVersion();
+
+        // then
+        test.equal(version, '1.0.1-a-b-c-d-e----f-SNAPSHOT');
     })
 };
