@@ -28,7 +28,7 @@ gitVersion(options);
 Parameter `options` is optional. It may contain these options:
 - `uniqueSnapshot` (default = `false`)\
     if false, snapshot versions will be suffixed with just `-SNAPSHOT`, e.g. `1.0.0-SNAPSHOT`;
-    otherwise, current abbreviated git commit's hash will be appended as well, e.g. `1.0.0-SNAPSHOT.c1b653ff` 
+    otherwise, current human-readable timestamp will be appended as well, e.g. `1.0.0-SNAPSHOT.20170920104533123` 
 
 ### Examples
 
@@ -52,7 +52,7 @@ git commit -m "add file2.js"
 
 ```js
 console.log(gitVersion()); // will print "0.1.1-SNAPSHOT"
-console.log(gitVersion({uniqueSnapshot: true})); // will print something like "0.1.1-SNAPSHOT.c1b653ff"
+console.log(gitVersion({uniqueSnapshot: true})); // will print something like "0.1.1-SNAPSHOT.20170920104533123"
 ```
 
 ```shell

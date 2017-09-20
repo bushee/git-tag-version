@@ -21,7 +21,7 @@ module.exports = function (options) {
 
         lastTag = getLastTag();
         versionFromTag = getVersionFromTag(lastTag);
-        lastCommit = getLastCommit(lastTag);
+        lastCommit = getLastCommit();
 
         if (tagContainsCommit(lastCommit)) {
             return versionFromTag;
@@ -95,7 +95,11 @@ module.exports = function (options) {
     }
 
     function getSnapshotSuffix() {
-        return uniqueSnapshot ? '-SNAPSHOT.' + getLastCommit() : '-SNAPSHOT';
+        function getTimestamp() {
+            return new Date().toISOString().replace(/\D/g, '');
+        }
+
+        return uniqueSnapshot ? '-SNAPSHOT.' + getTimestamp() : '-SNAPSHOT';
     }
 
     return getVersion();

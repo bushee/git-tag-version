@@ -1,6 +1,7 @@
 'use strict';
 
 var shell = require('shelljs');
+var tk = require('timekeeper');
 
 var gitVersion = require('../src/git-tag-version');
 
@@ -43,6 +44,7 @@ module.exports = {
     tearDown: function (done) {
         shell.cd(__dirname);
         shell.rm('-rf', 'test-repo');
+        tk.reset();
         done();
     },
 
@@ -94,13 +96,15 @@ module.exports = {
         // given
         createTag('myproject-1.0.0');
         switchBranch('newBranch');
-        var lastCommit = createCommit();
+        createCommit();
+        var time = new Date(Date.UTC(2017, 8, 20, 10, 45, 33, 123));
+        tk.freeze(time);
 
         // when
         var version = gitVersion({uniqueSnapshot: true});
 
         // then
-        test.equal(version, '1.0.1-newBranch-SNAPSHOT.' + lastCommit);
+        test.equal(version, '1.0.1-newBranch-SNAPSHOT.20170920104533123');
     }),
 
     "any semver-incompatible characters in branch name should be replaced with dash": wrapTest(function (test) {
