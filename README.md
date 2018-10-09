@@ -63,5 +63,12 @@ git tag -a v0.1.1 -m "v0.1.1"
 console.log(gitVersion()); // will print "0.1.1"
 ```
 
+### CLI
+An npm cli task is also available; it's options are exactly the same as JS version.
+
+```bash
+git-tag-version [--uniqueSnapshot | --unique-snapshot]
+```
+
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
