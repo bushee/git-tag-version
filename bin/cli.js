@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var gitTagVersion = require('../src/git-tag-version');
 
 var options = {
