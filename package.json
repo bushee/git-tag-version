@@ -25,6 +25,7 @@
     "node": ">= 0.8.0"
   },
   "main": "src/git-tag-version.js",
+  "bin": "bin/cli.js",
   "scripts": {
     "test": "grunt test"
   },
