@@ -75,7 +75,7 @@ module.exports = function (options) {
             var getBranchName = 'git rev-parse --abbrev-ref HEAD',
                 branchNameTrimmed;
             branchNameTrimmed = cp.execSync(getBranchName, {cwd: '.'}).toString().trim().replace(/[^0-9A-Za-z-]/g, '-');
-            if (branchNameTrimmed === 'master') {
+            if (branchNameTrimmed === 'master' || branchNameTrimmed === 'main') {
                 return versionPrefix + getSnapshotSuffix();
             }
             return versionPrefix + '-' + branchNameTrimmed + getSnapshotSuffix();
